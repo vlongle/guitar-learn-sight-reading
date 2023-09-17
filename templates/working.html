@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Sheet and Guitar Display</title>
+</head>
+
+<body>
+    <div style="display: flex;">
+        <div>
+            <!-- Display Sheet SVG -->
+            <object type="image/svg+xml" data="{{ url_for('static', filename='sheet/sheet.svg') }}"
+                width="400"></object>
+        </div>
+        <div>
+            <!-- Display Guitar SVG -->
+            <object type="image/svg+xml" data="{{ url_for('static', filename='guitar/guitar.svg') }}"
+                width="400"></object>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <button onclick="fetchRandomNote()">Random Note</button>
+        <button onclick="revealSelectedNote()">Reveal</button>
+        <button onclick="showAll()">Show All</button>
+        <div id="revealNote"></div>
+    </div>
+
+    <script>
+        function fetchRandomNote() {
+            fetch('{{ url_for("random_note") }}')
+                .then(response => response.json())
+                .then(data => {
+                    location.reload(); // Reload page to reflect changes in SVGs
+                });
+        }
+
+        function revealSelectedNote() {
+            fetch('{{ url_for("reveal_note") }}')
+                .then(response => response.json())
+                .then(data => {
+                    location.reload(); // Reload page to reflect changes in SVGs
+                    // a bit janky, I don't think the revealNote actually does anything...
+                    document.getElementById('revealNote').innerText = data.note;
+                });
+        }
+
+
+        function showAll() {
+            fetch('{{ url_for("show_all") }}')
+                .then(() => {
+                    document.getElementById('revealNote').innerText = '';
+                    location.reload(); // Reload page to reflect changes in SVGs
+                });
+        }
+    </script>
+</body>
+
+</html>

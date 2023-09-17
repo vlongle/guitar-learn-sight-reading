@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Sheet and Guitar Display</title>
+    <!-- Including Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Music Sheet and Guitar Display</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Display Sheet SVG -->
+                <object type="image/svg+xml" data="{{ url_for('static', filename='sheet/sheet.svg') }}"
+                    class="img-fluid"></object>
+            </div>
+            <div class="col-md-6">
+                <!-- Display Guitar SVG -->
+                <object type="image/svg+xml" data="{{ url_for('static', filename='guitar/guitar.svg') }}"
+                    class="img-fluid"></object>
+            </div>
+        </div>
+
+        <div class="text-center mt-1"> <!-- Reduced margin-top here from mt-4 to mt-2 -->
+            <button class="btn btn-primary mx-2" onclick="fetchRandomNote()">Random Note</button>
+            <button class="btn btn-warning mx-2" onclick="revealSelectedNote()">Reveal</button>
+            <button class="btn btn-success mx-2" onclick="showAll()">Show All</button>
+        </div>
+
+        <div class="text-center mt-4" id="revealNote" style="font-size: 24px;"></div>
+    </div>
+
+    <!-- JavaScript for interactions -->
+    <script>
+        function fetchRandomNote() {
+            fetch('{{ url_for("random_note") }}')
+                .then(response => response.json())
+                .then(data => {
+                    location.reload(); // Reload page to reflect changes in SVGs
+                });
+        }
+
+        function revealSelectedNote() {
+            fetch('{{ url_for("reveal_note") }}')
+                .then(response => response.json())
+                .then(data => {
+                    location.reload(); // Reload page to reflect changes in SVGs
+                    // Display the selected note in the revealNote div
+                    document.getElementById('revealNote').innerText = 'Selected Note: ' + data.note;
+                });
+        }
+
+        function showAll() {
+            fetch('{{ url_for("show_all") }}')
+                .then(() => {
+                    document.getElementById('revealNote').innerText = '';
+                    location.reload(); // Reload page to reflect changes in SVGs
+                });
+        }
+    </script>
+
+    <!-- Optional: Include Bootstrap JS for added Bootstrap features (like modal windows etc.) -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

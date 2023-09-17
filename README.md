@@ -1,0 +1,1 @@
+An app to learn music sight-reading on the guitar.
